@@ -46,6 +46,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -128,6 +129,7 @@ JAZZMIN_SETTINGS = {
     "site_title": "My Admin",
     "welcome_sign": "Welcome to Admin Panel",
     "login_logo": None,
+    'LANGUAGE_CODE': 'en-us',
     "search_model": ["auth.User"],
     "topmenu_links": [
 
@@ -137,7 +139,7 @@ JAZZMIN_SETTINGS = {
         {"name": "About", "url": "/about/", "new_window": True},
     ],
     "copyright": "Admin Panel",
-    # "language_chooser": True,
+    "language_chooser": True,
 
 }
 JAZZMIN_UI_TWEAKS = {
