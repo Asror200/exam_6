@@ -6,7 +6,7 @@ from costumers.forms import SingUpForm
 def register_user(request):
     """ This function is used to register a new user. """
     if request.method == 'POST':
-        form = SingUpForm(request.POST)
+        form = SingUpForm(request.POST, request.FILES)
         if form.is_valid():
             user = form.save(commit=False)
             """ Before save is added some permission. """
@@ -25,15 +25,15 @@ def register_user(request):
 def login_user(request):
     """ This function is used to login a user. """
     if request.method == 'POST':
-        username = request.POST['username']
+        email = request.POST['email']
         password = request.POST['password']
-        user = auth.authenticate(username=username, password=password)
+        user = auth.authenticate(email=email, password=password)
         if user:
             auth.login(request, user)
             messages.success(request, 'You are now logged in')
             return redirect('home')
         else:
-            messages.error(request, 'Invalid username or password')
+            messages.error(request, 'Invalid email or password')
             return redirect('login_page')
     return render(request, 'costumers/auth/login.html')
 

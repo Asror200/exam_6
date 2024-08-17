@@ -1,6 +1,5 @@
 from django import forms
-from django.contrib.auth.models import User
-from costumers.models import Customers
+from costumers.models import Customers, User
 
 
 class SingUpForm(forms.ModelForm):
@@ -8,7 +7,7 @@ class SingUpForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'password')
+        fields = ('username', 'email', 'password', 'image')
 
     def clean_password(self):
         password = self.data.get('password')
