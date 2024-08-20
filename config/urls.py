@@ -23,6 +23,8 @@ from config import settings
 urlpatterns = [
                   path('admin/', admin.site.urls),
                   path('customers/', include('costumers.urls')),
+                  path('user/', include('user.urls')),
+                  path('products/', include('product.urls')),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 if settings.USE_I18N:
     urlpatterns += i18n_patterns(

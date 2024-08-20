@@ -1,8 +1,9 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from costumers.models import Customers, User
+from costumers.models import Customers
 from costumers.admin_filter import JoinedDateFilter
 from django.contrib.auth.models import Group
+from user.models import User
 
 # Register your models here.
 admin.site.unregister(Group)

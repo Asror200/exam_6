@@ -1,0 +1,209 @@
+{% extends 'product/base/base.html' %}
+{% load static %}
+{% block product_grid_content %}
+    <div class="card mb-3">
+        <div class="card-body">
+            <div class="row flex-between-center">
+                <div class="col-sm-auto mb-2 mb-sm-0">
+                    <div id="table-customers-replace-element" class="d-flex">
+
+                        <form action="{% url 'product_add' %}">
+                            {% csrf_token %}
+                            <button class="btn btn-falcon-default btn-sm " type="submit">
+                                <span class="fas fa-plus" data-fa-transform="shrink-3 down-2"></span>
+                                <span class="d-none d-sm-inline-block ms-1">New</span>
+                            </button>
+                        </form>
+                        <a class="btn btn-falcon-default btn-sm mx-2" href="?filter=new_arrived">
+                            <span class="fas fa-filter" data-fa-transform="shrink-3 down-2"></span>
+                            <span class="d-none d-sm-inline-block ms-1">Filter</span>
+                        </a>
+
+                        <button class="btn btn-falcon-default btn-sm" type="button">
+                            <span class="fas fa-external-link-alt" data-fa-transform="shrink-3 down-2"></span>
+                            <span class="d-none d-sm-inline-block ms-1">Export</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-sm-auto">
+                    <div class="row gx-2 align-items-center">
+                        <div class="col-auto">
+                            <form class="row gx-2">
+                                <div class="col-auto"><small>Sort by:</small></div>
+                                <div class="col-auto">
+                                    <select class="form-select form-select-sm" aria-label="Bulk actions">
+                                        <option selected="">Best Match</option>
+                                        <option  value="Refund">Newest</option>
+                                        <option value="Delete">Price</option>
+                                    </select>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-auto pe-0"><a class="text-600 px-1" href="{% url 'product_list' %}"
+                                                      data-bs-toggle="tooltip" data-bs-placement="top"
+                                                      title="Product List"><span class="fas fa-list-ul"></span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card mb-3">
+        <div class="card-body">
+            <div class="row">
+                {% for product in page_obj %}
+                    <div class="mb-4 col-md-6 col-lg-4">
+                        <div class="border rounded-1 h-100 d-flex flex-column justify-content-between pb-3">
+                            <div class="overflow-hidden">
+                                {% for picture in pictures %}
+                                    {% if product.id == picture %}
+                                        <div class="position-relative rounded-top overflow-hidden">
+                                            <a class="d-block" href="{% url 'product_detail' product.slug %}">
+                                                <img class="img-fluid rounded-top"
+                                                     src="{{ product.images.first.image.url }}"
+                                                     alt=""/>
+                                            </a>
+
+                                            <span class="badge rounded-pill bg-success position-absolute mt-2 me-2 z-index-2 top-0 end-0">New</span>
+
+                                        </div>
+                                    {% else %}
+                                        <div class="position-relative rounded-top overflow-hidden">
+                                            <a class="d-block" href="{% url 'product_detail' product.slug %}">
+                                                <img class="img-fluid rounded-top"
+                                                     src="{% static 'costumers/img/products/2.jpg' %}"
+                                                     alt=""/>
+                                            </a>
+
+                                            <span class="badge rounded-pill bg-success position-absolute mt-2 me-2 z-index-2 top-0 end-0">New</span>
+
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                                <div class="p-3">
+                                    <h5 class="fs-0"><a class="text-dark"
+                                                        href="{% url 'product_detail' product.slug %}">{{ product.name }}</a>
+                                    </h5>
+                                    <p class="fs--1 mb-3"><a class="text-500" href="#!">Computer &amp; Accessories</a>
+                                    </p>
+                                    <h5 class="fs-md-2 text-warning mb-0 d-flex align-items-center mb-3">
+                                        {% if product.discount %}
+                                            <h4 class="fs-1 fs-md-2 text-warning mb-0">
+                                                ${{ product.discounted_price }}</h4>
+                                            <h5 class="fs--1 text-500 mb-0 mt-1">
+                                                <del>${{ product.price }}</del>
+                                                <span class="ms-1">-{{ product.discount }}%</span>
+                                            </h5>
+                                        {% else %}
+                                            <h4 class="fs-1 fs-md-2 text-warning mb-0">
+                                                ${{ product.price }}
+                                            </h4>
+                                        {% endif %}
+
+                                    </h5>
+                                    <p class="fs--1 mb-1">Shipping Cost: <strong>$50</strong></p>
+
+                                    {% if product.quantity > 0 %}
+                                        <p class="fs--1 mb-1">Stock: <strong
+                                                class="text-success">Available</strong>
+
+                                        </p>
+                                    {% else %}
+                                        <p class="fs--1 mb-1">Stock: <strong
+                                                class="text-danger">Sold-out</strong>
+
+                                        </p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="d-flex flex-between-center px-3">
+                                <div>
+                                    {% with ''|center:product.rating as ratings %}
+                                        <div class="ratings">
+                                            {% for rating in ratings %}
+                                                <span class="fa fa-star text-warning"></span>
+                                            {% endfor %}
+                                        </div>
+                                        <span class="ms-1">{{ comment }}</span>
+                                    {% endwith %}
+                                </div>
+                            </div>
+                            <div class="d-flex flex-between-center px-3">
+                                <div>
+                                    <a class="btn btn-sm btn-falcon-default me-2" href="#!" data-bs-toggle="tooltip"
+                                       data-bs-placement="top" title="Add to Wish List">
+                                        <span class="far fa-heart"></span>
+                                    </a>
+                                    <a class="btn btn-sm btn-falcon-default" href="#!" data-bs-toggle="tooltip"
+                                       data-bs-placement="top" title="Add to Cart">
+                                        <span class="fas fa-cart-plus"></span>
+                                    </a>
+                                    <a class="btn btn-sm btn-falcon-default"
+                                       href="{% url 'update_product' product.slug %}" data-bs-toggle="tooltip"
+                                       data-bs-placement="top" title="Edite">
+                                        <span class="fas fa-cog"></span>
+                                    </a>
+                                    <a class="btn btn-sm btn-falcon-default"
+                                       href="{% url 'delete_product' product.slug %}" data-bs-toggle="tooltip"
+                                       data-bs-placement="top" title="Delete">
+                                        <span class="fas fa-trash"></span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+
+            </div>
+        </div>
+        <div class="card-footer d-flex align-items-center justify-content-center">
+
+            {% if customers.has_previous %}
+                <a class="btn btn-sm btn-falcon-default me-1" href="?page=1" title="First">
+                    &laquo; First
+                </a>
+                <a class="btn btn-sm btn-falcon-default me-1" href="?page={{ customers.previous_page_number }}"
+                   title="Previous">
+                    <span class="fas fa-chevron-left"></span>
+                </a>
+            {% else %}
+                <span class="btn btn-sm btn-falcon-default me-1" title="First" disabled>
+                    &laquo; First
+                </span>
+                <span class="btn btn-sm btn-falcon-default me-1" title="Previous" disabled>
+                <span class="fas fa-chevron-left"></span>
+                </span>
+            {% endif %}
+
+            {% for num in customers.paginator.page_range %}
+                <ul class="pagination mb-0">
+                    {% if customers.number == num %}
+                        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                    {% else %}
+                        <li class="page-item "><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                    {% endif %}
+                </ul>
+            {% endfor %}
+
+            {% if customers.has_next %}
+                <a class="btn btn-sm btn-falcon-default ms-1" href="?page={{ customers.next_page_number }}"
+                   title="Next">
+                    <span class="fas fa-chevron-right"></span>
+                </a>
+                <a class="btn btn-sm btn-falcon-default ms-1" href="?page={{ customers.paginator.num_pages }}"
+                   title="Last">
+                    Last &raquo;
+                </a>
+            {% else %}
+                <span class="btn btn-sm btn-falcon-default ms-1" title="Next" disabled>
+                    <span class="fas fa-chevron-right"></span>
+                </span>
+                <span class="btn btn-sm btn-falcon-default ms-1" title="Last" disabled>
+                    Last &raquo;
+                </span>
+            {% endif %}
+        </div>
+
+    </div>
+{% endblock %}
+

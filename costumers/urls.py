@@ -1,22 +1,18 @@
 from django.urls import path
-from costumers.views import views, auth_views
+from costumers import views
 from django.conf.urls.i18n import set_language
 urlpatterns = [
 
-    path('', views.home, name='home'),
-    path('customer-detail/<slug:_slug>/', views.customer_detail, name='customer_details'),
-    path('calendar-page/', views.calendar, name='calendar'),
-    path('shopping-cart/', views.shopping_cart, name='shopping_cart'),
+    path('', views.CustomerListView.as_view(), name='home'),
+    path('customer-detail/<slug:_slug>/', views.CustomerDetailView.as_view(), name='customer_details'),
+    path('calendar-page/', views.CalendarView.as_view(), name='calendar'),
+    path('shopping-cart/', views.ShoppingCartListView.as_view(), name='shopping_cart'),
     path('i18n/setlang/', set_language, name='set_language'),
 
     # action over customers
-    path('add-customer/', views.add_customer, name='add_customer'),
-    path('edite-customer/<slug:_slug>/', views.edit_customer, name='edit_customer'),
-    path('delete-customer/<slug:_slug>/', views.delete_customer, name='delete_customer'),
+    path('add-customer/', views.CustomerCreateView.as_view(), name='add_customer'),
+    path('edite-customer/<slug:_slug>/', views.CustomerUpdateView.as_view(), name='edit_customer'),
+    path('delete-customer/<slug:_slug>/', views.CustomerDetailView.as_view(), name='delete_customer'),
 
-    # authentication users
-    path('register-page/', auth_views.register_user, name='register_page'),
-    path('login-page/', auth_views.login_user, name='login_page'),
-    path('logout-page/', auth_views.logout_user, name='logout_page'),
-    path('forgotten-password/', auth_views.forgot_password, name='forgotten_password'),
+
 ]

@@ -1,0 +1,9 @@
+{% extends 'product/base/crud-base.html' %}
+{% block add_product %}
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button type="submit" class="btn btn-outline-primary"> Add</button>
+    </form>
+{% endblock %}
