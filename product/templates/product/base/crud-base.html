@@ -94,6 +94,25 @@
 
 
                                 <div class="p-4 p-md-5 flex-grow-1">
+                                    {% if messages %}
+                                        {% for message in messages %}
+                                            {% if 'success' in message.tags %}
+                                                <div class="alert alert-success alert-dismissible fade show"
+                                                     role="alert">
+                                                    {{ message }}
+                                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                                            aria-label="Close"></button>
+                                                </div>
+                                            {% else %}
+                                                <div class="alert alert-warning alert-dismissible fade show"
+                                                     role="alert">
+                                                    {{ message }}
+                                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                                            aria-label="Close"></button>
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
                                     {% block add_product %}
                                     {% endblock %}
                                     {% block delete_confirm_product %}

@@ -56,8 +56,7 @@
                     <div class="col-12 p-card">
                         <div class="row">
                             <div class="col-sm-5 col-md-4">
-                                {% for picture in pictures %}
-                                    {% if product.id == picture %}
+                                    {% if product.images %}
                                         <div class="position-relative h-sm-100">
                                             <a class="d-block h-100"
                                                href="{% url 'product_detail' product.slug %}">
@@ -81,7 +80,7 @@
                                             </div>
                                         </div>
                                     {% endif %}
-                                {% endfor %}
+{#                                {% endfor %}#}
 
                             </div>
                             <div class="col-sm-7 col-md-8">

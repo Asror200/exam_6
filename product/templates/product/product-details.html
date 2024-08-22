@@ -14,11 +14,11 @@
                                 {% if main_image %}
                                     <div class="swiper-slide h-100">
                                         <img class="rounded-1 fit-cover h-100 w-100"
-                                             src="{{ main_image.image.url }}" alt=""/>
+                                             src="{{ product.images.first.image.url }}" alt=""/>
                                     </div>
                                 {% endif %}
 
-                                {% for image in other_images %}
+                                {% for image in product.images.iterator %}
                                     <div class="swiper-slide h-100">
                                         <img class="rounded-1 fit-cover h-100 w-100"
                                              src="{{ image.image.url }}" alt=""/>
@@ -125,7 +125,7 @@
                                  aria-labelledby="specifications-tab">
                                 <table class="table fs--1 mt-3">
                                     <tbody>
-                                    {% for product_attribute in product_attributes %}
+                                    {% for product_attribute in product.productattribute_set.all %}
                                         <tr>
                                             <td class="bg-100"
                                                 style="width: 30%;">{{ product_attribute.attribute.key_name }}</td>

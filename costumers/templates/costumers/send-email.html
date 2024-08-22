@@ -1,0 +1,27 @@
+{% extends 'product/base/crud-base.html' %}
+
+{% block delete_confirm_product %}
+    <h1>Send Email</h1>
+    <p>now you can send email who you want</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="exampleFormControlInput1" class="form-label">From Email</label><br>
+            {{ form.from_email }}
+        </div>
+        <div class="mb-3">
+            <label for="exampleFormControlInput1" class="form-label">To Email</label><br>
+            {{ form.to_email }}
+        </div><div class="mb-3">
+            <label for="exampleFormControlInput1" class="form-label">Title</label><br>
+            {{ form.subject }}
+        </div>
+        <div class="mb-3">
+            <label for="exampleFormControlTextarea1" class="form-label">Message</label><br>
+            {{ form.message }}
+        </div>
+        <button class="btn-falcon-default" type="submit">Send</button>
+        <button class="btn-falcon-default" type="reset">Reset</button>
+    </form>
+{% endblock %}

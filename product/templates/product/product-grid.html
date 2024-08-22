@@ -55,8 +55,8 @@
                     <div class="mb-4 col-md-6 col-lg-4">
                         <div class="border rounded-1 h-100 d-flex flex-column justify-content-between pb-3">
                             <div class="overflow-hidden">
-                                {% for picture in pictures %}
-                                    {% if product.id == picture %}
+{#                                {% for picture in pictures %}#}
+                                    {% if product.images %}
                                         <div class="position-relative rounded-top overflow-hidden">
                                             <a class="d-block" href="{% url 'product_detail' product.slug %}">
                                                 <img class="img-fluid rounded-top"
@@ -79,7 +79,7 @@
 
                                         </div>
                                     {% endif %}
-                                {% endfor %}
+{#                                {% endfor %}#}
                                 <div class="p-3">
                                     <h5 class="fs-0"><a class="text-dark"
                                                         href="{% url 'product_detail' product.slug %}">{{ product.name }}</a>

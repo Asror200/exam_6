@@ -24,7 +24,10 @@
                     </div>
 
                     <div id="table-customers-replace-element" class="d-flex">
-
+                        <a class="btn btn-falcon-default btn-sm mx-2" href="{% url 'sending-email' %}">
+                            <span class="fas fa-envelope" data-fa-transform="shrink-3 down-2"></span>
+                            <span class="d-none d-sm-inline-block ms-1">Send email</span>
+                        </a>
                         <form action="{% url 'add_customer' %}">
                             {% csrf_token %}
                             <button class="btn btn-falcon-default btn-sm " type="submit">

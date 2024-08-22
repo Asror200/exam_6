@@ -1,5 +1,5 @@
 from django.contrib import messages
-from product.models import Product, ProductAttribute
+from product.models import Product
 from django.views.generic import edit, detail, list
 from product.forms import ProductModelForm, ProductForm
 from django.urls import reverse_lazy
@@ -13,16 +13,6 @@ class ProductListView(list.ListView):
     template_name = 'product/product-list.html'
     context_object_name = 'products'
     paginate_by = 4
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        page_obj = context['page_obj']
-        pictures = {}
-        for product in page_obj.object_list:
-            if product.images.exists():
-                pictures[product.id] = product.images.first().image.url
-        context['pictures'] = pictures
-        return context
 
     def get_queryset(self):
         category_id = self.request.GET.get('category_id')
@@ -39,16 +29,6 @@ class ProductGribView(list.ListView):
     template_name = 'product/product-grid.html'
     context_object_name = 'products'
     paginate_by = 4
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        page_obj = context['page_obj']
-        pictures = {}
-        for product in page_obj.object_list:
-            if product.images.exists():
-                pictures[product.id] = product.images.first().image.url
-        context['pictures'] = pictures
-        return context
 
     def get_queryset(self):
         category_id = self.request.GET.get('category_id')
@@ -67,14 +47,11 @@ class ProductDetailView(detail.DetailView):
     slug_field = 'slug'
     slug_url_kwarg = '_slug'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        product = self.get_object()
-        context['main_image'] = product.images.first()
-        context['other_images'] = product.images.exclude(id=context['main_image'].id) if context[
-            'main_image'] else product.images.all()
-        context['product_attributes'] = ProductAttribute.objects.filter(product=product)
-        return context
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     product = self.get_object()
+    #     context['product_attributes'] = ProductAttribute.objects.filter(product=product)
+    #     return context
 
 
 class ProductAddView(edit.CreateView):
@@ -125,6 +102,3 @@ class ProductDeleteView(edit.DeleteView):
     def form_valid(self, form):
         messages.success(self.request, 'Product deleted successfully')
         return super().form_valid(form)
-
-    def get_queryset(self):
-        return Product.objects.all()

@@ -1,13 +1,14 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from costumers.models import Customers
-from costumers.forms import AddCustomerForm
+from costumers.forms import AddCustomerForm, SendEmailForm
 from django.contrib import messages
 from typing import Optional
 from django.db.models import Q
 from transliterate import translit
-from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.views import View
+from django.views.generic import View, FormView, edit
+from django.core.mail import send_mail
+from django.urls import reverse_lazy
 
 
 # Create your views here.
@@ -79,14 +80,16 @@ class CustomerUpdateView(View):
         return redirect('edit_customer', _slug)
 
 
-class CustomerDeleteView(View):
-    """This class deletes a customer from the database."""
+class CustomerDeleteView(edit.DeleteView):
+    model = Customers
+    template_name = 'costumers/delete-confirm-customer.html'
+    success_url = reverse_lazy('home')
+    slug_field = 'slug'
+    slug_url_kwarg = '_slug'
 
-    def get(self, request, _slug):
-        customer = get_object_or_404(Customers, slug=_slug)
-        customer.delete()
-        messages.success(request, 'Your customer has been deleted.')
-        return redirect('home')
+    def form_valid(self, form):
+        messages.success(self.request, 'Product deleted successfully')
+        return super().form_valid(form)
 
 
 class CustomerCreateView(View):
@@ -107,6 +110,26 @@ class CustomerCreateView(View):
         return redirect('add_customer')
 
 
+class SendingEmail(FormView):
+    form_class = SendEmailForm
+    template_name = 'costumers/send-email.html'
+    success_url = reverse_lazy('home')
+
+    def form_valid(self, form):
+        subject = form.cleaned_data['subject']
+        from_email = form.cleaned_data['from_email']
+        to_email = form.cleaned_data['to_email']
+        message = form.cleaned_data['message']
+        send_mail(subject, message, from_email, [to_email], fail_silently=False)
+        messages.success(self.request, 'Your email has been sent.')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        response = super().form_invalid(form)
+        messages.error(self.request, 'Something went wrong, please try again')
+        return response
+
+
 class CalendarView(View):
     """This class is used to calculate a calendar"""
 
@@ -116,5 +139,6 @@ class CalendarView(View):
 
 class ShoppingCartListView(View):
     """This is currently only working by default"""
+
     def shopping_cart(self, request):
         return render(request, 'costumers/shopping-cart.html')

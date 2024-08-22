@@ -10,18 +10,23 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+
 from pathlib import Path
 import jazzmin
 import os
+from config.jazzmin import JAZZMIN_SETTINGS
+import environ
 
+
+env = environ.Env()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-y(rr-qorxmo(!0aqh2h!_bv7y@b%b_-w+51yoaph*w15s$2oaj'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -41,6 +46,7 @@ INSTALLED_APPS = [
     'costumers.apps.CostumersConfig',
     'user.apps.UserConfig',
     'product.apps.ProductConfig',
+    'django.contrib.postgres',
 ]
 
 MIDDLEWARE = [
@@ -79,9 +85,14 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': env('DB_ENGINE'),
+        'NAME': env('DB_NAME'),
+        'USER': env('DB_USER'),
+        'PASSWORD': env('DB_PASSWORD'),
+        'HOST': env('DB_HOST'),
+        'PORT': env('DB_PORT'),
     }
+
 }
 
 # Password validation
@@ -107,7 +118,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Tashkent'
 
 USE_I18N = True
 
@@ -128,24 +139,15 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'user.User'
 
-JAZZMIN_SETTINGS = {
-    "site_title": "My Admin",
-    "welcome_sign": "Welcome to Admin Panel",
-    "login_logo": None,
-    'LANGUAGE_CODE': 'en-us',
-    "search_model": ["auth.User"],
-    "topmenu_links": [
+EMAIL_BACKEND = env('EMAIL_BACKEND')
+EMAIL_HOST = env('EMAIL_HOST')
+EMAIL_PORT = env('EMAIL_PORT')
+EMAIL_USE_TLS = env('EMAIL_USE_TLS')
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 
-        {"name": "Home", "url": "admin:index", "permissions": ["auth.view_user"]},
-
-        {"name": "Support", "url": "https://github.com/Asror200", "new_window": True},
-        {"name": "About", "url": "/about/", "new_window": True},
-    ],
-    "copyright": "Admin Panel",
-    "language_chooser": True,
-
-}
 JAZZMIN_UI_TWEAKS = {
 
     "theme": "litera",
 }
+JAZZMIN_SETTINGS = JAZZMIN_SETTINGS
