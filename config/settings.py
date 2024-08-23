@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'user.apps.UserConfig',
     'product.apps.ProductConfig',
     'django.contrib.postgres',
+    'social_django',
 ]
 
 MIDDLEWARE = [
@@ -145,9 +146,23 @@ EMAIL_PORT = env('EMAIL_PORT')
 EMAIL_USE_TLS = env('EMAIL_USE_TLS')
 EMAIL_HOST_USER = env('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+EMAIL_DEFAULT_SENDER = EMAIL_HOST_USER
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'social_core.backends.google.GoogleOAuth2',
+]
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
+LOGIN_REDIRECT_URL = 'home'
 
 JAZZMIN_UI_TWEAKS = {
 
     "theme": "litera",
 }
 JAZZMIN_SETTINGS = JAZZMIN_SETTINGS
+
+
+clint_id = "629094629462-v1f1i9rijgqv7sojjpggbtaa0qsu6nh1.apps.googleusercontent.com"
+clint_secret = "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"

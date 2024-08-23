@@ -25,6 +25,7 @@ urlpatterns = [
                   path('customers/', include('costumers.urls')),
                   path('user/', include('user.urls')),
                   path('products/', include('product.urls')),
+                  path('social-auth/', include('social_django.urls', namespace='social')),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 if settings.USE_I18N:
     urlpatterns += i18n_patterns(
