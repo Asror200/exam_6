@@ -3,14 +3,14 @@ from django.utils.html import format_html
 from costumers.models import Customers
 from costumers.admin_filter import JoinedDateFilter
 from django.contrib.auth.models import Group
-from user.models import User
+from import_export.admin import ImportExportModelAdmin
 # Register your models here.
 admin.site.unregister(Group)
-admin.site.register(User)
+
 
 
 @admin.register(Customers)
-class ProductModelAdmin(admin.ModelAdmin):
+class ProductModelAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = ('full_name', 'email', 'phone', 'get_image', 'joined')
     search_fields = ('first_name', 'email')
     prepopulated_fields = {'slug': ('email',)}

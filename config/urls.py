@@ -21,12 +21,12 @@ from django.conf.urls.i18n import i18n_patterns
 from config import settings
 
 urlpatterns = [
-                  path('admin/', admin.site.urls),
-                  path('customers/', include('costumers.urls')),
-                  path('user/', include('user.urls')),
-                  path('products/', include('product.urls')),
-                  path('social-auth/', include('social_django.urls', namespace='social')),
-              ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path('admin/', admin.site.urls),
+    path('customers/', include('costumers.urls')),  # namespace-ni to'g'irlash
+    path('user/', include('user.urls')),
+    path('products/', include('product.urls')),
+    path('social-auth/', include('social_django.urls', namespace='social')),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 if settings.USE_I18N:
     urlpatterns += i18n_patterns(
 

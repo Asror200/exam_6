@@ -10,7 +10,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
-
 from pathlib import Path
 import jazzmin
 import os
@@ -18,17 +17,23 @@ from config.jazzmin import JAZZMIN_SETTINGS
 import environ
 
 
-env = environ.Env()
+env = environ.Env(
+    DEBUG=(bool, False)
+)
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+
 SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
+
 DEBUG = True
 
 ALLOWED_HOSTS = []
@@ -48,6 +53,7 @@ INSTALLED_APPS = [
     'product.apps.ProductConfig',
     'django.contrib.postgres',
     'social_django',
+    'import_export',
 ]
 
 MIDDLEWARE = [
@@ -139,7 +145,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'user.User'
-
+SOCIAL_AUTH_USER_MODEL = 'user.User'
 EMAIL_BACKEND = env('EMAIL_BACKEND')
 EMAIL_HOST = env('EMAIL_HOST')
 EMAIL_PORT = env('EMAIL_PORT')
@@ -156,6 +162,11 @@ AUTHENTICATION_BACKENDS = [
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
 LOGIN_REDIRECT_URL = 'home'
+# SOCIAL_AUTH_URL_NAMESPACE = 'social'
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'home'
+SOCIAL_AUTH_LOGIN_ERROR_URL = 'register_page'
+SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
+
 
 JAZZMIN_UI_TWEAKS = {
 
@@ -163,6 +174,10 @@ JAZZMIN_UI_TWEAKS = {
 }
 JAZZMIN_SETTINGS = JAZZMIN_SETTINGS
 
-
-clint_id = "629094629462-v1f1i9rijgqv7sojjpggbtaa0qsu6nh1.apps.googleusercontent.com"
-clint_secret = "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"
+SOCIAL_AUTH_PIPELINE = (
+    'social_core.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.auth_allowed',
+    'social_core.pipeline.social_auth.social_user',
+    'social_core.pipeline.user.user_details',
+)

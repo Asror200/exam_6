@@ -31,6 +31,7 @@ class RegisterUserView(View):
             messages.success(request, 'Your account has been created and logged in.')
             return redirect('home')
         messages.error(request, 'Something went wrong, please try again.')
+        return redirect('register_page')
 
 
 class LoginUserView(View):
