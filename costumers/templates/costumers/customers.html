@@ -40,10 +40,19 @@
                             <span class="d-none d-sm-inline-block ms-1">Filter</span>
                         </a>
 
-                        <button class="btn btn-falcon-default btn-sm" type="button">
-                            <span class="fas fa-external-link-alt" data-fa-transform="shrink-3 down-2"></span>
-                            <span class="d-none d-sm-inline-block ms-1">Export</span>
-                        </button>
+                        <form method="get" action="{% url 'export_data' %}">
+                            <select id="format" name="format">
+                                <option value="none" selected>...</option>
+                                <option value="csv">CSV</option>
+                                <option value="json">JSON</option>
+                                <option value="xlsx">Excel</option>
+                            </select>
+                            <button class="btn btn-falcon-default btn-sm" type="submit"><span
+                                    class="fas fa-external-link-alt"
+                                    data-fa-transform="shrink-3 down-2"></span><span
+                                    class="d-none d-sm-inline-block ms-1">Export</span>
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>

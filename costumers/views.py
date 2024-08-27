@@ -1,3 +1,8 @@
+import csv
+import io
+import openpyxl
+import datetime
+import json
 from django.shortcuts import render, redirect, get_object_or_404
 from costumers.models import Customers
 from costumers.forms import AddCustomerForm, SendEmailForm
@@ -9,6 +14,10 @@ from django.core.paginator import Paginator
 from django.views.generic import View, FormView, edit
 from django.core.mail import send_mail
 from django.urls import reverse_lazy
+from django.http import HttpResponse
+from django.forms.models import model_to_dict
+from django.core.serializers.json import DjangoJSONEncoder
+from django.db.models.fields.files import ImageFieldFile
 
 
 # Create your views here.
@@ -127,6 +136,91 @@ class SendingEmail(FormView):
     def form_invalid(self, form):
         response = super().form_invalid(form)
         messages.error(self.request, 'Something went wrong, please try again')
+        return response
+
+
+class CustomJSONEncoder(DjangoJSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, ImageFieldFile):
+            return obj.url
+        return super().default(obj)
+
+
+class ExportDataView(View):
+    def get(self, request, *args, **kwargs):
+        date = datetime.datetime.now().strftime("%Y-%m-%d")
+        format = request.GET.get('format')
+
+        if format == 'csv':
+            return self.export_csv(date)
+
+        elif format == 'json':
+            return self.export_json(date)
+
+        elif format == 'xlsx':
+            return self.export_xlsx(date)
+
+        else:
+            return HttpResponse('Bad Request', status=400)
+
+    def export_csv(self, date):
+        meta = Customers._meta
+        field_names = [field.name for field in meta.fields]
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = f'attachment; filename={Customers._meta.object_name}-{date}.csv'
+
+        writer = csv.writer(response)
+        writer.writerow(field_names)
+        for obj in Customers.objects.all():
+            writer.writerow([getattr(obj, field) for field in field_names])
+
+        return response
+
+    def export_json(self, date):
+        response = HttpResponse(content_type='application/json')
+        customers = Customers.objects.all()
+        data = []
+
+        for customer in customers:
+            customer_dict = model_to_dict(customer)
+            if 'image_field' in customer_dict:
+                customer_dict['image_field'] = customer_dict['image_field'].url if customer_dict[
+                    'image_field'] else None
+            data.append(customer_dict)
+
+        response.write(json.dumps(data, indent=4, cls=CustomJSONEncoder))
+        response['Content-Disposition'] = f'attachment; filename=customers-{date}.json'
+
+        return response
+
+    def export_xlsx(self, date):
+        customers = Customers.objects.all()
+        meta = Customers._meta
+        field_names = [field.name for field in meta.fields]
+        workbook = openpyxl.Workbook()
+        worksheet = workbook.active
+        worksheet.title = "Customers"
+        worksheet.append(field_names)
+        for customer in customers:
+            row = []
+            for field in field_names:
+                value = getattr(customer, field)
+                if hasattr(value, 'url'):
+                    value = value.url
+                elif isinstance(value, datetime.datetime):
+                    if value.tzinfo is not None:
+                        value = value.replace(tzinfo=None)
+                    value = value.strftime('%Y-%m-%d %H:%M:%S')
+                elif isinstance(value, datetime.date):
+                    value = value.strftime('%Y-%m-%d')
+                row.append(value)
+            worksheet.append(row)
+        virtual_workbook = io.BytesIO()
+        workbook.save(virtual_workbook)
+        virtual_workbook.seek(0)
+        response = HttpResponse(content=virtual_workbook.read(),
+                                content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = f'attachment; filename=customers-{date}.xlsx'
         return response
 
 

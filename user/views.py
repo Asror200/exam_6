@@ -50,6 +50,7 @@ class LoginUserView(View):
                 messages.success(request, 'You are now logged in')
                 return redirect('home')
             messages.error(request, 'Invalid email or password')
+            return redirect('login_page')
 
 
 class LogoutUserView(View):

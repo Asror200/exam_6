@@ -8,7 +8,6 @@ from import_export.admin import ImportExportModelAdmin
 admin.site.unregister(Group)
 
 
-
 @admin.register(Customers)
 class ProductModelAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = ('full_name', 'email', 'phone', 'get_image', 'joined')
