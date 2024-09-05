@@ -36,15 +36,18 @@
                 <div class="col-lg-6">
                     <h5>{{ product.name }}</h5><a class="fs--1 mb-2 d-block" href="#!">Computer
                     &amp; Accessories</a>
-                    <div class="ratings-container">
-                        {% with ''|center:product.rating as ratings %}
-                            <div class="ratings">
-                                {% for rating in ratings %}
+                    <div>
+                        <div class="fs--2 mb-3 d-inline-block text-decoration-none">
+                            {% with average_rating|floatformat:0 as rounded_rating %}
+                                {% for i in rounded_rating %}
                                     <span class="fa fa-star text-warning"></span>
                                 {% endfor %}
-                            </div>
-                            <span class="ms-1">{{ comment }}</span>
-                        {% endwith %}
+                            {% endwith %}
+                            <span class="fa fa-star-half-alt text-warning star-icon"></span>
+                            <span class="ms-1 text-600">({{ average_rating }})</span>
+                        </div>
+
+
                     </div>
 
                     <p class="fs--1">{{ product.description }}</p>
@@ -139,59 +142,58 @@
                                  aria-labelledby="reviews-tab">
                                 <div class="row mt-3">
                                     <div class="col-lg-6 mb-4 mb-lg-0">
-                                        <div class="mb-1"><span
-                                                class="fa fa-star text-warning fs--1"></span><span
-                                                class="fa fa-star text-warning fs--1"></span><span
-                                                class="fa fa-star text-warning fs--1"></span><span
-                                                class="fa fa-star text-warning fs--1"></span><span
-                                                class="fa fa-star text-warning fs--1"></span><span
-                                                class="ms-3 text-dark fw-semi-bold">Awesome support, great code 😍</span>
-                                        </div>
-                                        <p class="fs--1 mb-2 text-600">By Drik Smith • October 14, 2019</p>
-                                        <p class="mb-0">You shouldn't need to read a review to see how nice
-                                            and polished this theme is. So I'll tell you something you won't
-                                            find in the demo. After the download I had a technical question,
-                                            emailed the team and got a response right from the team CEO with
-                                            helpful advice.</p>
-                                        <hr class="my-4"/>
-                                        <div class="mb-1"><span
-                                                class="fa fa-star text-warning fs--1"></span><span
-                                                class="fa fa-star text-warning fs--1"></span><span
-                                                class="fa fa-star text-warning fs--1"></span><span
-                                                class="fa fa-star text-warning fs--1"></span><span
-                                                class="fa fa-star-half-alt text-warning star-icon fs--1"></span><span
-                                                class="ms-3 text-dark fw-semi-bold">Outstanding Design, Awesome Support</span>
-                                        </div>
-                                        <p class="fs--1 mb-2 text-600">By Liane • December 14, 2019</p>
-                                        <p class="mb-0">This really is an amazing template - from the style
-                                            to the font - clean layout. SO worth the money! The demo pages
-                                            show off what Bootstrap 4 can impressively do. Great template!!
-                                            Support response is FAST and the team is amazing - communication
-                                            is important.</p>
+                                        {% for commit in commits %}
+                                            <div class="mb-1">
+                                                <div class="ratings-container">
+                                                    {% with ''|center:commit.rating as ratings %}
+                                                        <div class="ratings">
+                                                            {% for rating in ratings %}
+                                                                <span class="fa fa-star text-warning"></span>
+                                                            {% endfor %}
+                                                        </div>
+                                                    {% endwith %}
+                                                </div>
+
+                                            </div>
+                                            <p class="fs--1 mb-2 text-600">By {{ commit.user_name }}
+                                                • {{ commit.created_at }}</p>
+                                            <p class="mb-0">{{ commit.body }}</p>
+                                            <hr class="my-4"/>
+                                        {% endfor %}
+
                                     </div>
-                                    <div class="col-lg-6 ps-lg-5">
-                                        <form>
+                                    <div class="col-lg-6 ps-lg-5 d-flex">
+                                        <form method="post">
+                                            {% csrf_token %}
                                             <h5 class="mb-3">Write your Review</h5>
                                             <div class="mb-3">
-                                                <label class="form-label">Ratting: </label>
+                                                <select id="rating" name="rating">
+                                                    <option value="none" selected>Rating</option>
+                                                    <option value="1">1</option>
+                                                    <option value="2">2</option>
+                                                    <option value="3">3</option>
+                                                    <option value="4">4</option>
+                                                    <option value="5">5</option>
+                                                </select>
+                                                </label>
                                                 <div class="d-block"
                                                      data-rater='{"starSize":32,"step":0.5}'></div>
                                             </div>
                                             <div class="mb-3">
                                                 <label class="form-label"
                                                        for="formGroupNameInput">Name:</label>
-                                                <input class="form-control" id="formGroupNameInput"
+                                                <input class="form-control" name="user_name" id="formGroupNameInput"
                                                        type="text"/>
                                             </div>
                                             <div class="mb-3">
                                                 <label class="form-label"
                                                        for="formGroupEmailInput">Email:</label>
-                                                <input class="form-control" id="formGroupEmailInput"
+                                                <input class="form-control" name="user_email" id="formGroupEmailInput"
                                                        type="email"/>
                                             </div>
                                             <div class="mb-3">
                                                 <label class="form-label" for="formGrouptextareaInput">Review:</label>
-                                                <textarea class="form-control" id="formGrouptextareaInput"
+                                                <textarea class="form-control" name="body" id="formGrouptextareaInput"
                                                           rows="3"></textarea>
                                             </div>
                                             <button class="btn btn-primary" type="submit">Submit</button>

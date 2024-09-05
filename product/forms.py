@@ -1,5 +1,5 @@
 from django import forms
-from product.models import Product
+from product.models import Product, Commit
 from product.models import ProductAttribute, Attribute, AttributeValue, Image
 
 
@@ -12,7 +12,7 @@ class ProductModelForm(forms.ModelForm):
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['name', 'description', 'price', 'rating', 'discount', 'quantity']
+        fields = ['name', 'description', 'price', 'discount', 'quantity']
         widgets = {
             'description': forms.Textarea(attrs={'rows': 10, 'cols': 40}),
         }
@@ -46,3 +46,9 @@ class ImageForm(forms.ModelForm):
     class Meta:
         model = Image
         fields = ['image']
+
+
+class ProductCommitForm(forms.ModelForm):
+    class Meta:
+        model = Commit
+        fields = ['user_name', 'user_email', 'body', 'rating']

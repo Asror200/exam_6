@@ -19,6 +19,7 @@ class SingUpForm(forms.ModelForm):
     def save(self, commit=True):
         user = super(SingUpForm, self).save(commit=False)
         user.set_password(self.data['password'])
+        user.is_active = False
         user.is_superuser = True
         user.is_staff = True
 

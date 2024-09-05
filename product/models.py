@@ -11,19 +11,10 @@ class BaseModel(models.Model):
 
 
 class Product(BaseModel):
-    class RatingChoices(models.IntegerChoices):
-        zero = 0
-        one = 1
-        two = 2
-        three = 3
-        four = 4
-        five = 5
 
-    objects = None
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField(null=True)
     price = models.FloatField(null=True)
-    rating = models.PositiveSmallIntegerField(choices=RatingChoices.choices, default=RatingChoices.zero.value)
     discount = models.IntegerField(default=0)
     quantity = models.IntegerField(default=1)
     slug = models.SlugField(null=True, blank=True)
@@ -76,3 +67,21 @@ class ProductAttribute(BaseModel):
     product = models.ForeignKey('Product', on_delete=models.CASCADE)
     attribute = models.ForeignKey('Attribute', on_delete=models.CASCADE)
     attribute_value = models.ForeignKey('AttributeValue', on_delete=models.CASCADE)
+
+
+class Commit(BaseModel):
+    class RatingChoices(models.IntegerChoices):
+        zero = 0
+        one = 1
+        two = 2
+        three = 3
+        four = 4
+        five = 5
+    rating = models.PositiveSmallIntegerField(choices=RatingChoices.choices, default=RatingChoices.zero.value)
+    user_name = models.CharField(max_length=125)
+    user_email = models.CharField(max_length=125)
+    body = models.TextField()
+    product = models.ForeignKey('Product', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"Review by {self.user_name} for {self.product.name}"

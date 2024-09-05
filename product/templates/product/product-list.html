@@ -56,31 +56,31 @@
                     <div class="col-12 p-card">
                         <div class="row">
                             <div class="col-sm-5 col-md-4">
-                                    {% if product.images %}
-                                        <div class="position-relative h-sm-100">
-                                            <a class="d-block h-100"
-                                               href="{% url 'product_detail' product.slug %}">
-                                                <img class="img-fluid fit-cover w-sm-100 h-sm-100 rounded-1 absolute-sm-centered"
-                                                     src="{{ product.images.first.image.url }}" alt=""/>
-                                            </a>
-                                            <div class="badge rounded-pill bg-success position-absolute top-0 end-0 me-2 mt-2 fs--2 z-index-2">
-                                                New
-                                            </div>
+                                {% if product.images %}
+                                    <div class="position-relative h-sm-100">
+                                        <a class="d-block h-100"
+                                           href="{% url 'product_detail' product.slug %}">
+                                            <img class="img-fluid fit-cover w-sm-100 h-sm-100 rounded-1 absolute-sm-centered"
+                                                 src="{{ product.images.first.image.url }}" alt=""/>
+                                        </a>
+                                        <div class="badge rounded-pill bg-success position-absolute top-0 end-0 me-2 mt-2 fs--2 z-index-2">
+                                            New
                                         </div>
-                                    {% else %}
-                                        <div class="position-relative h-sm-100">
-                                            <a class="d-block h-100"
-                                               href="{% url 'product_detail' product.slug %}">
-                                                <img class="img-fluid fit-cover w-sm-100 h-sm-100 rounded-1 absolute-sm-centered"
-                                                     src="{% static 'costumers/img/products/2.jpg' %}"
-                                                     alt=""/>
-                                            </a>
-                                            <div class="badge rounded-pill bg-success position-absolute top-0 end-0 me-2 mt-2 fs--2 z-index-2">
-                                                New
-                                            </div>
+                                    </div>
+                                {% else %}
+                                    <div class="position-relative h-sm-100">
+                                        <a class="d-block h-100"
+                                           href="{% url 'product_detail' product.slug %}">
+                                            <img class="img-fluid fit-cover w-sm-100 h-sm-100 rounded-1 absolute-sm-centered"
+                                                 src="{% static 'costumers/img/products/2.jpg' %}"
+                                                 alt=""/>
+                                        </a>
+                                        <div class="badge rounded-pill bg-success position-absolute top-0 end-0 me-2 mt-2 fs--2 z-index-2">
+                                            New
                                         </div>
-                                    {% endif %}
-{#                                {% endfor %}#}
+                                    </div>
+                                {% endif %}
+                                {#                                {% endfor %}#}
 
                             </div>
                             <div class="col-sm-7 col-md-8">
@@ -118,16 +118,14 @@
 
                                             {% endif %}
 
-                                            <div class="ratings-container">
-                                                {% with ''|center:product.rating as ratings %}
-                                                    <div class="ratings">
-                                                        {% for rating in ratings %}
-                                                            <span class="fa fa-star text-warning"></span>
-                                                        {% endfor %}
-                                                    </div>
-                                                    <span class="ms-1">{{ comment }}</span>
-                                                {% endwith %}
-                                            </div>
+                                            {% with product.average_rating|floatformat:0 as rounded_rating %}
+                                                {% for i in "0123456789" %}
+                                                    {% if i|length <= rounded_rating %}
+                                                        <span class="fa fa-star text-warning"></span>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endwith %}
+
 
                                             <div class="d-none d-lg-block">
                                                 <p class="fs--1 mb-1">Shipping Cost: <strong>$50</strong>

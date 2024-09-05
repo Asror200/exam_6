@@ -1,5 +1,5 @@
 from django.contrib import admin
-from product.models import Image, Attribute, AttributeValue, ProductAttribute, Product
+from product.models import Image, Attribute, AttributeValue, ProductAttribute, Product, Commit
 from import_export.admin import ImportExportModelAdmin
 
 
@@ -38,3 +38,9 @@ class ProductAttributeAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     search_fields = ('product',)
     list_per_page = 10
 
+
+@admin.register(Commit)
+class CommitAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    list_display = ('id', 'product', 'user_name', 'body', 'created_at')
+    search_fields = ('created_at',)
+    list_per_page = 10

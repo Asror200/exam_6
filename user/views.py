@@ -5,6 +5,14 @@ from django.views import View
 from user.forms import SingUpForm
 from django.urls import reverse_lazy
 from config.settings import EMAIL_DEFAULT_SENDER
+from user.token import account_activation_token
+from django.contrib.sites.shortcuts import get_current_site
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.template.loader import render_to_string
+from user.models import User
+from django.contrib.auth import login
+from django.http import HttpResponse
 
 
 class RegisterUserView(View):
@@ -20,16 +28,22 @@ class RegisterUserView(View):
             user = form.save(commit=False)
             user.save()
             auth.login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+            message = render_to_string('user/acc_active_email.html', {
+                'user': user,
+                'domain': get_current_site(request).domain,
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'token': account_activation_token.make_token(user),
+            })
             send_mail(
-                'Successfully Registered',
-                'Thank you for creating your account!',
+                'Activate your blog account.',
+                message,
                 EMAIL_DEFAULT_SENDER,
                 [user.email],
                 fail_silently=False
 
             )
             messages.success(request, 'Your account has been created and logged in.')
-            return redirect('home')
+            return render(request, 'user/confirm_activate_account.html')
         messages.error(request, 'Something went wrong, please try again.')
         return redirect('register_page')
 
@@ -65,3 +79,20 @@ class LogoutUserView(View):
 def forgot_password(request):
     """ When a user forgot its password this function is called.(but it works by default for now) """
     return render(request, 'user/forgot-password.html')
+
+
+class AccountActivationView(View):
+    def get(self, request, uidb64, token):
+        try:
+            uid = force_bytes(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(pk=uid)
+        except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+            user = None
+        if user and account_activation_token.check_token(user, token):
+            user.is_active = True
+            user.save()
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+            messages.success(request, 'Your account has been activated.')
+            return redirect('home')
+        else:
+            return HttpResponse('Activation link is invalid!')

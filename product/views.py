@@ -1,8 +1,10 @@
 from django.contrib import messages
+from django.shortcuts import redirect
 from product.models import Product
 from django.views.generic import edit, detail, list
-from product.forms import ProductModelForm, ProductForm
+from product.forms import ProductModelForm, ProductForm, ProductCommitForm
 from django.urls import reverse_lazy
+from django.db.models import Avg
 
 
 # Create your views here.
@@ -23,6 +25,13 @@ class ProductListView(list.ListView):
             return Product.objects.all().order_by('-created_at')
         return Product.objects.all()
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        for product in context['products']:
+            average_rating = product.commit_set.aggregate(average_rating=Avg('rating'))['average_rating'] or 0
+            product.average_rating = average_rating
+        return context
+
 
 class ProductGribView(list.ListView):
     model = Product
@@ -39,6 +48,18 @@ class ProductGribView(list.ListView):
             return Product.objects.all().order_by('-created_at')
         return Product.objects.all()
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        products = self.get_queryset()
+
+        for product in products:
+            product.average_rating = product.commit_set.aggregate(
+                average_rating=Avg('rating')
+            )['average_rating'] or 0
+
+        context['products'] = products
+        return context
+
 
 class ProductDetailView(detail.DetailView):
     model = Product
@@ -47,11 +68,24 @@ class ProductDetailView(detail.DetailView):
     slug_field = 'slug'
     slug_url_kwarg = '_slug'
 
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     product = self.get_object()
-    #     context['product_attributes'] = ProductAttribute.objects.filter(product=product)
-    #     return context
+    def post(self, request, *args, **kwargs):
+        form = ProductCommitForm(request.POST)
+        if form.is_valid():
+            commit = form.save(commit=False)
+            commit.product = self.get_object()
+            commit.save()
+            messages.success(request, 'Your commit has been saved.')
+            return redirect('product_detail', _slug=self.get_object().slug)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        product = self.get_object()
+        commits = product.commit_set.order_by('-rating')[:3]
+        average_rating = product.commit_set.aggregate(average_rating=Avg('rating'))['average_rating'] or 0
+        context['average_rating'] = average_rating
+
+        context['commits'] = commits
+        return context
 
 
 class ProductAddView(edit.CreateView):

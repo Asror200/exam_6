@@ -118,14 +118,7 @@
                             </div>
                             <div class="d-flex flex-between-center px-3">
                                 <div>
-                                    {% with ''|center:product.rating as ratings %}
-                                        <div class="ratings">
-                                            {% for rating in ratings %}
-                                                <span class="fa fa-star text-warning"></span>
-                                            {% endfor %}
-                                        </div>
-                                        <span class="ms-1">{{ comment }}</span>
-                                    {% endwith %}
+                                        <p> Rating: {{ average_rating|floatformat:0 }}</p>
                                 </div>
                             </div>
                             <div class="d-flex flex-between-center px-3">
