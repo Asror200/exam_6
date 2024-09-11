@@ -1,0 +1,22 @@
+[
+    {
+        "id": 1,
+        "email": "asror12@gmail.com",
+        "username": "asror",
+        "image": "images/user/photo_2024-02-27_17-15-21_3G23pPE.jpg",
+        "date_of_birth": "None",
+        "is_active": "True",
+        "is_stuff": "True",
+        "is_superuser": "True"
+    },
+    {
+        "id": 3,
+        "email": "asrorberdiyev1202@gmail.com",
+        "username": "asror",
+        "image": "",
+        "date_of_birth": "None",
+        "is_active": "True",
+        "is_stuff": "True",
+        "is_superuser": "True"
+    }
+]

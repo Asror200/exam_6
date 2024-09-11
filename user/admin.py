@@ -7,7 +7,7 @@ from django.utils.html import format_html
 
 @admin.register(User)
 class UserModelAdmin(ImportExportModelAdmin, admin.ModelAdmin):
-    list_display = ('id', 'username', 'email', 'get_image')
+    list_display = ('id', 'username', 'email', 'get_image', 'date_of_birth')
     search_fields = ('username', 'email')
     list_filter = [JoinedDateFilter]
 

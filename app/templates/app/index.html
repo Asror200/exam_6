@@ -1,6 +1,6 @@
 {% extends 'user/base/base.html' %}
 {% load static %}
-{% block title_content %} Confirm registration {% endblock %}
+{% block title_content %} APP {% endblock %}
 
 {% block forgotten_password_content %}
     <!-- ===============================================-->
@@ -43,10 +43,10 @@
                                             <form method="get" action="{% url 'index' %}">
                                                 <select class="btn btn-falcon-default btn-sm" id="filter" name="filter">
                                                     <option selected>...</option>
-                                                    <option  value="every_writer_is_count_of_books">every writer's count of books</option>
-                                                    <option value="every_writer_is_most_valuable_book">every writer's most valuable book</option>
-                                                    <option value="every_writer_is_cheapest_book">every writer's cheapest book</option>
-                                                    <option value="the_average_of_each_writer_is_cheapest_book">the average of each writer's cheapest book</option>
+                                                    <option  value="every_writer_s_count_of_books">every writer's count of books</option>
+                                                    <option value="every_writer_s_most_valuable_book">every writer's most valuable book</option>
+                                                    <option value="every_writer_s_cheapest_book">every writer's cheapest book</option>
+                                                    <option value="the_average_of_each_writer_s_cheapest_book">the average of each writer's cheapest book</option>
                                                 </select>
                                                 <button class="btn btn-falcon-default btn-sm" type="submit"><span
                                                         class="fa-external-link-alt"

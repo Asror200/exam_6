@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.utils.html import format_html
+
 from product.models import Image, Attribute, AttributeValue, ProductAttribute, Product, Commit
 from import_export.admin import ImportExportModelAdmin
 
@@ -13,9 +15,20 @@ class ProductAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 
 @admin.register(Image)
 class ImageAdmin(ImportExportModelAdmin, admin.ModelAdmin):
-    list_display = ('id', 'image', 'product', 'created_at')
+    list_display = ('id', 'get_image', 'product', 'created_at')
     search_fields = ('product',)
     list_per_page = 10
+
+    def get_image(self, obj):
+        if obj.image:
+            return format_html('<img src="{}" class="rounded-circle" style="width: 50px; height: 50px;" />',
+                               obj.image.url)
+        return format_html('<img src="{}" class="rounded-circle" style="width: 50px; height: auto;" />',
+                           'https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-'
+                           'background-user-symbol-vector-illustration.jpg?s=1024x1024&w=is&k=20&c=-mUWsTSENkugJ3qs5cov'
+                           'paj-bhYpxXY-v9RDpzsw504=')
+
+    get_image.short_description = 'Image'
 
 
 @admin.register(Attribute)

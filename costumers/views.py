@@ -97,7 +97,7 @@ class CustomerDeleteView(edit.DeleteView):
     slug_url_kwarg = '_slug'
 
     def form_valid(self, form):
-        messages.success(self.request, 'Product deleted successfully')
+        messages.success(self.request, 'Customer deleted successfully')
         return super().form_valid(form)
 
 
